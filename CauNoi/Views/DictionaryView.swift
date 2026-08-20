@@ -79,6 +79,24 @@ struct DictionaryView: View {
                                 } label: { Image(systemName: "speaker.wave.2") }
                                     .buttonStyle(.bordered).buttonBorderShape(.circle)
                             }
+                            if let art = r.art {
+                                HStack(spacing: 8) {
+                                    Text("\(art) \(r.deWord)")
+                                        .font(.system(.body, design: .serif).weight(.bold))
+                                        .foregroundStyle(Color.article(art))
+                                    if let pl = r.plural {
+                                        Text(t("Plural: die \(pl)", "số nhiều: die \(pl)"))
+                                            .font(.subheadline).foregroundStyle(Color.ink2)
+                                    }
+                                    Spacer()
+                                }
+                                .padding(8)
+                                .background(Color.article(art).opacity(0.1))
+                                .clipShape(RoundedRectangle(cornerRadius: 5))
+                            }
+                            if let exDe = r.exDe, let exVi = r.exVi {
+                                ExampleRow(ex: (exDe, exVi))
+                            }
                             if !r.alts.isEmpty {
                                 Text(t("Weitere Treffer:", "Kết quả khác:"))
                                     .font(.caption).foregroundStyle(Color.ink3)
@@ -125,8 +143,8 @@ struct DictionaryView: View {
                         .card()
                     }
 
-                    Text(t("Quelle: MyMemory (mymemory.translated.net) — kostenlos, keine Anmeldung.",
-                           "Nguồn: MyMemory (mymemory.translated.net) — miễn phí."))
+                    Text(t("Quellen: MyMemory (Übersetzung) · de.wiktionary.org (Artikel & Plural) · Tatoeba (Beispielsätze) — alle kostenlos.",
+                           "Nguồn: MyMemory (bản dịch) · de.wiktionary.org (giống & số nhiều) · Tatoeba (câu ví dụ) — đều miễn phí."))
                         .font(.caption2).foregroundStyle(Color.ink3)
                 }
                 .padding()

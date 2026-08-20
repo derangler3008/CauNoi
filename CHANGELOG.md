@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3 (2026-08-20)
+- Wörterbuch um zwei Quellen erweitert: de.wiktionary.org liefert Artikel +
+  Plural (farbig, autoritativ), Tatoeba echte Beispielsatz-Paare DE↔VI —
+  beides offline-gecacht wie die Übersetzung
+- Datenqualität: alle 81 Nomen gegen Wiktionary validiert — 0 Artikelfehler;
+  3 fehlende Plurale ergänzt (Arbeiten, Hilfen, Feierabende)
+
 ## 1.2 (2026-08-20)
 - Stimmen-Auswahl in beiden Profilen (Mehr/Thêm → Stimmen): alle installierten
   Stimmen anhören und wählen, beste Qualität zuerst, Auswahl bleibt gespeichert

@@ -32,6 +32,12 @@ xcrun devicectl device install app --device 4CF1BE53-2A23-51AF-828E-0BF5BD79C7EB
 - Web-App-Quelle: `web/hoc-dau.html` (Artifact: claude.ai/code/artifact/15e899f6-af90-46e2-ae0e-0a2db964ab94)
 - Backup: `git push icloud` (Bare-Repo in iCloud Drive) + `git push github main` (github.com/derangler3008/CauNoi, privat)
 
+## Lösch-Protokoll (Dauerauftrag)
+Ersatzlose Löschungen (Dateien, Codezeilen, Commits, Branches) und destruktive
+git-Operationen (rebase auf gepushtes, force-push, Reset) NIE ohne vorherigen
+Bericht: Was (Datei+Zeile) · Warum · Auswirkungen/Abhängigkeiten · eigene
+Bewertung — dann Freigabe des Users abwarten.
+
 ## Technische Notizen
 - Tonlogik/Telex: `Model/Engine.swift` — bei Änderungen IMMER Suite aus Punkt 4 laufen lassen
 - Wörterbuch: MyMemory-API (kostenlos, ohne Schlüssel), `Model/Dict.swift`, Cache lokal, Quelle in der UI nennen

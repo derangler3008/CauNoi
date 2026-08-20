@@ -18,6 +18,7 @@ Entwickeln → prüfen → korrigieren → erneut prüfen. Nach jedem Entwicklun
 8. Sicherheit & Datenschutz: keine Secrets, nur HTTPS, keine Nutzerdaten an APIs (nie die E-Mail des Users mitsenden)
 9. Barrierefreiheit: Dynamic Type, Kontrast (Eltern-Modus!)
 10. Version + CHANGELOG.md pflegen
+11. HANDOFF.md aktualisieren (bei jedem Big Step) — neue Sessions lesen sie ZUERST
 
 ## Deploy aufs iPhone (User: iPhone 15, Team HLRMF3W3M9)
 ```

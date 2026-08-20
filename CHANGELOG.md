@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2 (2026-08-20)
+- Stimmen-Auswahl in beiden Profilen (Mehr/Thêm → Stimmen): alle installierten
+  Stimmen anhören und wählen, beste Qualität zuerst, Auswahl bleibt gespeichert
+- Anleitung in der App, wie man Apples Premium-Stimmen nachlädt
+  (Bedienungshilfen → Gesprochene Inhalte → Stimmen)
+
 ## 1.1 (2026-08-20)
 - Wörterbuch (Tra từ) in beiden Profilen: Deutsch↔Vietnamesisch über MyMemory-API,
   jede Suche wird lokal gespeichert und ist danach offline nutzbar

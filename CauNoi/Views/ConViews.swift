@@ -557,6 +557,7 @@ struct ConMoreView: View {
     @ObservedObject private var progress = Progress.shared
     @AppStorage("profile") private var profile = ""
     @State private var confirmReset = false
+    @State private var showVoices = false
 
     var body: some View {
         NavigationStack {
@@ -611,6 +612,14 @@ struct ConMoreView: View {
                     }
                     .listRowBackground(Color.surface)
                 }
+                Section("Stimme") {
+                    Button {
+                        showVoices = true
+                    } label: {
+                        Label("Stimmen anhören & wählen", systemImage: "waveform.circle")
+                    }
+                    .listRowBackground(Color.surface)
+                }
                 Section("Fortschritt") {
                     let tDone = progress.mastered(prefix: "t:", of: VietnameseData.tonePool.map(\.v))
                     let wDone = progress.mastered(prefix: "w:", of: VietnameseData.words.map(\.v))
@@ -635,6 +644,12 @@ struct ConMoreView: View {
             .navigationBarTitleDisplayMode(.inline)
             .confirmationDialog("Wirklich den ganzen Fortschritt löschen?", isPresented: $confirmReset, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) { progress.reset() }
+            }
+            .sheet(isPresented: $showVoices) { VoicePickerView(ui: "de") }
+            .onAppear {
+                #if DEBUG
+                if UserDefaults.standard.bool(forKey: "showvoices") { showVoices = true }
+                #endif
             }
         }
     }

@@ -471,6 +471,7 @@ struct BoMeMoreView: View {
     @ObservedObject private var progress = Progress.shared
     @AppStorage("profile") private var profile = ""
     @State private var confirmReset = false
+    @State private var showVoices = false
 
     var body: some View {
         NavigationStack {
@@ -486,6 +487,14 @@ struct BoMeMoreView: View {
                         .listRowBackground(Color.surface)
                     Button("Xóa hết tiến độ", role: .destructive) { confirmReset = true }
                         .listRowBackground(Color.surface)
+                }
+                Section("Giọng đọc") {
+                    Button {
+                        showVoices = true
+                    } label: {
+                        Label("Nghe thử & chọn giọng đọc", systemImage: "waveform.circle")
+                    }
+                    .listRowBackground(Color.surface)
                 }
                 Section("Chữ to hơn") {
                     Text("Muốn chữ to hơn nữa: Cài đặt (Einstellungen) → Màn hình & Độ sáng → Cỡ chữ.")
@@ -507,6 +516,12 @@ struct BoMeMoreView: View {
             .navigationBarTitleDisplayMode(.inline)
             .confirmationDialog("Xóa hết tiến độ học?", isPresented: $confirmReset, titleVisibility: .visible) {
                 Button("Xóa", role: .destructive) { progress.reset() }
+            }
+            .sheet(isPresented: $showVoices) { VoicePickerView(ui: "vi") }
+            .onAppear {
+                #if DEBUG
+                if UserDefaults.standard.bool(forKey: "showvoices") { showVoices = true }
+                #endif
             }
         }
     }

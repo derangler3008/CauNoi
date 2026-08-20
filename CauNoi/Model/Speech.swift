@@ -13,10 +13,34 @@ final class Speech {
     func speak(_ text: String, lang: String, slow: Bool = false) {
         synth.stopSpeaking(at: .immediate)
         let u = AVSpeechUtterance(string: text)
-        u.voice = bestVoice(lang)
+        u.voice = currentVoice(lang)
         u.rate = slow ? 0.3 : 0.42
         u.preUtteranceDelay = 0.05
         synth.speak(u)
+    }
+
+    /// Vom Nutzer gewählte Stimme — sonst die beste installierte.
+    func currentVoice(_ lang: String) -> AVSpeechSynthesisVoice? {
+        if let id = UserDefaults.standard.string(forKey: "voice.\(lang)"),
+           let v = AVSpeechSynthesisVoice(identifier: id) {
+            return v
+        }
+        return bestVoice(lang)
+    }
+
+    /// Alle installierten Stimmen einer Sprache, beste zuerst.
+    func voices(for lang: String) -> [AVSpeechSynthesisVoice] {
+        AVSpeechSynthesisVoice.speechVoices()
+            .filter { $0.language.hasPrefix(lang) }
+            .sorted { rank($0) > rank($1) }
+    }
+
+    static func qualityLabel(_ v: AVSpeechSynthesisVoice, ui: String) -> String {
+        switch v.quality {
+        case .premium:  return ui == "de" ? "Premium" : "Cao cấp"
+        case .enhanced: return ui == "de" ? "Verbessert" : "Nâng cao"
+        default:        return ui == "de" ? "Standard" : "Thường"
+        }
     }
 
     private func bestVoice(_ lang: String) -> AVSpeechSynthesisVoice? {

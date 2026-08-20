@@ -11,7 +11,7 @@ Entwickeln → prüfen → korrigieren → erneut prüfen. Nach jedem Entwicklun
 2. Selbstreview des Diffs
 3. Statische Analyse: 0 Warnungen
 4. Unit-Tests grün — Engine-Suite:
-   `swiftc -O CauNoi/Model/Engine.swift CauNoi/Model/VietnameseData.swift CauNoi/Model/GermanData.swift Tests/EngineTestMain.swift -o /tmp/cntest && /tmp/cntest`
+   `swiftc -O CauNoi/Model/Engine.swift CauNoi/Model/VietnameseData.swift CauNoi/Model/GermanData.swift Tests/main.swift -o /tmp/cntest && /tmp/cntest`
 5. Build grün: `xcodebuild -project CauNoi.xcodeproj -scheme CauNoi -destination 'platform=iOS Simulator,id=…' -derivedDataPath build build`
 6. Funktionaler Smoke-Test per Simulator-Screenshots (Launch-Args: `-profile con|bome -tab 0..4`, DEBUG-Hooks: `-autoanswer 1`, `-showdict 1 -dictq Wort`)
 7. Fehlerpfade & Offline-Verhalten (Wörterbuch muss offline sauber degradieren)

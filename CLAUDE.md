@@ -19,9 +19,18 @@ Entwickeln → prüfen → korrigieren → erneut prüfen. Nach jedem Entwicklun
 9. Barrierefreiheit: Dynamic Type, Kontrast (Eltern-Modus!)
 10. Version + CHANGELOG.md pflegen
 
+## Deploy aufs iPhone (User: iPhone 15, Team HLRMF3W3M9)
+```
+xcodebuild -project CauNoi.xcodeproj -scheme CauNoi -configuration Release \
+  -destination 'generic/platform=iOS' -derivedDataPath build-device \
+  -allowProvisioningUpdates DEVELOPMENT_TEAM=HLRMF3W3M9 build
+xcrun devicectl device install app --device 4CF1BE53-2A23-51AF-828E-0BF5BD79C7EB \
+  build-device/Build/Products/Release-iphoneos/CauNoi.app
+```
+
 ## Ablage & Backup
 - Web-App-Quelle: `web/hoc-dau.html` (Artifact: claude.ai/code/artifact/15e899f6-af90-46e2-ae0e-0a2db964ab94)
-- Backup: `git push icloud` → Bare-Repo in iCloud Drive (`Backups/CauNoi.git`)
+- Backup: `git push icloud` (Bare-Repo in iCloud Drive) + `git push github main` (github.com/derangler3008/CauNoi, privat)
 
 ## Technische Notizen
 - Tonlogik/Telex: `Model/Engine.swift` — bei Änderungen IMMER Suite aus Punkt 4 laufen lassen

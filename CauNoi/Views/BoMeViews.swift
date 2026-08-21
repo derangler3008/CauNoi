@@ -153,6 +153,7 @@ struct ListenQuizView: View {
                             if let ex = GermanData.examples[word.de] ?? MyWords.shared.example(de: word.de) {
                                 ExampleRow(ex: ex)
                             }
+                            FlagButton(entry: "\(word.full) = \(word.vi)", ui: "vi")
                             Button { next() } label: {
                                 Text("Tiếp →").font(.body.weight(.semibold)).frame(maxWidth: .infinity)
                             }
@@ -308,6 +309,7 @@ struct ArticleQuizView: View {
                             if let ex = GermanData.examples[word.de] ?? MyWords.shared.example(de: word.de) {
                                 ExampleRow(ex: ex)
                             }
+                            FlagButton(entry: "\(word.full) = \(word.vi)", ui: "vi")
                             Button { next() } label: {
                                 Text("Tiếp →").font(.body.weight(.semibold)).frame(maxWidth: .infinity)
                             }
@@ -531,6 +533,7 @@ struct BoMeMoreView: View {
     @State private var confirmReset = false
     @State private var showVoices = false
     @ObservedObject private var my = MyWords.shared
+    @ObservedObject private var flags = Flags.shared
 
     var body: some View {
         NavigationStack {
@@ -546,6 +549,18 @@ struct BoMeMoreView: View {
                         .listRowBackground(Color.surface)
                     Button("Xóa hết tiến độ", role: .destructive) { confirmReset = true }
                         .listRowBackground(Color.surface)
+                }
+                if !Flags.shared.items.isEmpty {
+                    Section("Đã ghi lại — nghe lạ (\(flags.items.count))") {
+                        ForEach(flags.items, id: \.self) { f in
+                            Text(f).font(.subheadline).foregroundStyle(Color.ink2)
+                                .listRowBackground(Color.surface)
+                        }
+                        .onDelete { idx in idx.map { flags.items[$0] }.forEach { flags.remove($0) } }
+                        Text("Đưa danh sách này cho con xem để sửa lại lời dịch.")
+                            .font(.caption).foregroundStyle(Color.ink3)
+                            .listRowBackground(Color.paper)
+                    }
                 }
                 if !my.items.isEmpty {
                     Section("Từ của tôi (\(my.items.count)) — vuốt sang trái để xóa") {

@@ -69,6 +69,7 @@ struct TileQuizView: View {
                                     + Text("\n\(pair.vi)"),
                                 bold: true
                             )
+                            FlagButton(entry: "\(pair.de) = \(pair.vi)", ui: "vi")
                         }
 
                         HStack(spacing: 8) {

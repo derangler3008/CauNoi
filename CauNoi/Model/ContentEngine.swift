@@ -29,25 +29,63 @@ enum SentenceFactory {
     /// der→den im Akkusativ; die/das bleiben gleich.
     static func akkusativ(_ art: String) -> String { art == "der" ? "den" : art }
 
-    /// Satz-Schablonen: (de-Muster mit {art}/{akk}/{de}, vi-Muster mit {vi})
-    private static let templates: [(de: String, vi: String)] = [
+    /// Schablonen für ORTBARES (Dinge/Orte): sehen, zeigen, suchen.
+    private static let locateTemplates: [(de: String, vi: String)] = [
         ("Wo ist {art} {de}?",        "{vi} ở đâu?"),
         ("Das ist {art} {de}.",       "Đây là {vi}."),
-        ("Ich brauche {akk} {de}.",   "Tôi cần {vi}."),
         ("Ich suche {akk} {de}.",     "Tôi đang tìm {vi}."),
         ("Hier ist {art} {de}.",      "{vi} ở đây.")
     ]
+    /// Schablone für BESCHAFFBARES: brauchen.
+    private static let needTemplates: [(de: String, vi: String)] = [
+        ("Ich brauche {akk} {de}.",   "Tôi cần {vi}.")
+    ]
 
-    /// Baut aus einem Nomen grammatisch korrekte Übungssätze.
+    /// Kategorien, deren Wörter greifbar/ortbar sind.
+    private static let locateCats: Set<String> = [
+        "Ăn uống", "Nhà cửa", "Quần áo", "Mua sắm", "Giấy tờ",
+        "Đi lại", "Trường học", "Sức khỏe", "Từ của tôi"
+    ]
+    /// Teilmenge: Dinge, die man sinnvoll „braucht".
+    private static let needCats: Set<String> = [
+        "Ăn uống", "Quần áo", "Giấy tờ", "Trường học", "Từ của tôi"
+    ]
+    private static let needExtra: Set<String> = [
+        "Pflaster", "Verband", "Salbe", "Rezept", "Termin", "Tablette",
+        "Schlüssel", "Quittung", "Tüte", "Speisekarte"
+    ]
+    /// Abstrakta & Vorgänge, für die KEINE Sätze generiert werden —
+    /// „Wo ist der Husten?" ist grammatisch, aber Unsinn.
+    private static let noGen: Set<String> = [
+        "Husten", "Schnupfen", "Grippe", "Impfung", "Blutdruck",
+        "Untersuchung", "Allergie", "Schwindel", "Krankmeldung",
+        "Sprechstunde", "Überweisung", "Anmeldung", "Größe", "Unfall",
+        "Verspätung", "Richtung", "Feiertag", "Staatsangehörigkeit",
+        "Gebühr", "Frist", "Miete", "Steuererklärung", "Rente"
+    ]
+
+    /// Nur die erste Übersetzungsvariante, ohne Klammern — sonst
+    /// kleben Kommas und Erläuterungen mitten im generierten Satz.
+    static func viShort(_ vi: String) -> String {
+        var v = vi.replacingOccurrences(of: "\\s*\\([^)]*\\)", with: "", options: .regularExpression)
+        if let cut = v.firstIndex(where: { $0 == "," || $0 == ";" }) { v = String(v[..<cut]) }
+        return v.trimmingCharacters(in: .whitespaces)
+    }
+
+    /// Baut aus einem Nomen nur dann Sätze, wenn sie natürlich klingen.
     static func sentences(for w: GWord) -> [SentencePair] {
-        guard let art = w.art else { return [] }
-        return templates.map { t in
+        guard let art = w.art, !noGen.contains(w.de), locateCats.contains(w.cat) else { return [] }
+        let vi = viShort(w.vi)
+        guard !vi.isEmpty else { return [] }
+        var ts = locateTemplates
+        if needCats.contains(w.cat) || needExtra.contains(w.de) { ts += needTemplates }
+        return ts.map { t in
             SentencePair(
                 de: t.de
                     .replacingOccurrences(of: "{art}", with: art)
                     .replacingOccurrences(of: "{akk}", with: akkusativ(art))
                     .replacingOccurrences(of: "{de}", with: w.de),
-                vi: t.vi.replacingOccurrences(of: "{vi}", with: w.vi),
+                vi: t.vi.replacingOccurrences(of: "{vi}", with: vi),
                 source: "Tự tạo")
         }
     }

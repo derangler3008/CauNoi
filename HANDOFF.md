@@ -2,7 +2,7 @@
 > **Für einen frischen Chat:** Nur diese Datei lesen genügt, um weiterzuarbeiten.
 > Aktualisiert bei jedem Big Step (Versionssprung, neues Feature, Infrastruktur).
 
-**Stand:** 2026-08-20 · **Version 1.7 (Build 8)** · läuft auf iPhone 15 des Users
+**Stand:** 2026-08-20 · **Version 1.8 (Build 9)** · läuft auf iPhone 15 des Users
 **Repo:** `~/Developer/CauNoi` · Remotes: `icloud` (Bare-Repo iCloud Drive/Backups) + `github` (derangler3008/CauNoi, privat) — nach jedem Commit auf BEIDE pushen.
 
 ## Projekt in 3 Sätzen
@@ -82,6 +82,15 @@ Smoke-Test-Hooks (Debug): `-profile con|bome -tab 0..4 -autoanswer 1 -showdict 1
   Suchbegriffe durch `Net.cleanQuery`
 - Es verlässt das Gerät: NUR das Suchwort. Keine IDs, nie die E-Mail des Users
 - Bewusst KEIN Cert-Pinning (öffentliche APIs rotieren Zertifikate; Bruchrisiko > Nutzen)
+
+## Vietnamesisch-Qualität (Muttersprachler-Loop)
+- User ist Muttersprachler (hören/sprechen) — sein Sprachgefühl ist die QA-Instanz
+- Meldeliste: FlagButton in allen Quiz-Feedbacks → Liste in Mehr/Thêm
+  („Flags.shared", UserDefaults caunoi.flags.v1). Bei Sessions IMMER fragen,
+  ob Einträge da sind, und sie gezielt korrigieren
+- TTS: Vietnamesisch NIE unter rate 0.42 sprechen (Töne verzerren); Premium-Stimme
+  Linh empfehlen. SentenceFactory: noGen/locateCats/needCats pflegen statt
+  blind für alle Nomen zu generieren
 
 ## Arbeitsregeln des Users (verbindlich, Details in CLAUDE.md + Memory)
 1. Iterativ: entwickeln → prüfen → korrigieren → erneut prüfen; 10-Punkte-Review je Schritt

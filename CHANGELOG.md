@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8 (2026-08-20)
+- Vietnamesisch klingt natürlicher:
+  · Sprechtempo sprachabhängig — Vietnamesisch in natürlichem Tempo
+    (verlangsamte Tonkurven klangen verzerrt), Deutsch weiter im Lerntempo
+  · Satzfabrik generiert nur noch sinnvolle Sätze: Abstrakta ausgeschlossen
+    („Wo ist der Husten?" gibt es nicht mehr), „brauchen" nur für Beschaffbares,
+    nur erste Übersetzungsvariante ohne Klammern im Satz
+  · 10 steife Glossen durch natürliche ersetzt (băng cá nhân, giấy nghỉ ốm, …)
+- Neu: Melde-Knopf „Nghe lạ? / Klingt komisch?" unter jedem Quiz-Feedback —
+  sammelt Stellen, an denen das Sprachgefühl protestiert, als Liste in Mehr/Thêm
+
 ## 1.7 (2026-08-20)
 - Großer Wortschatz-Ausbau auf Konversationsniveau:
   Deutsch 104 → 636 Wörter (+532: Essen, Körper, Kleidung, Wohnen, Verkehr,

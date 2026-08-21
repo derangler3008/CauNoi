@@ -278,6 +278,7 @@ struct WriteView: View {
                                     ? Text("\(word.v)").font(.system(.title3, design: .serif).weight(.semibold)) + Text("  ·  \(word.de)")
                                     : Text(hint())
                             )
+                            FlagButton(entry: "\(word.v) = \(word.de)", ui: "de")
                         }
                         if revealed {
                             FeedbackBox(ok: true, title: word.v,
@@ -559,6 +560,7 @@ struct ConMoreView: View {
     @AppStorage("profile") private var profile = ""
     @State private var confirmReset = false
     @State private var showVoices = false
+    @ObservedObject private var flags = Flags.shared
 
     var body: some View {
         NavigationStack {
@@ -612,6 +614,18 @@ struct ConMoreView: View {
                         }
                     }
                     .listRowBackground(Color.surface)
+                }
+                if !flags.items.isEmpty {
+                    Section("Gemeldet — klingt komisch (\(flags.items.count))") {
+                        ForEach(flags.items, id: \.self) { f in
+                            Text(f).font(.subheadline).foregroundStyle(Color.ink2)
+                                .listRowBackground(Color.surface)
+                        }
+                        .onDelete { idx in idx.map { flags.items[$0] }.forEach { flags.remove($0) } }
+                        Text("Diese Liste Claude zeigen — dann werden die Übersetzungen gezielt verbessert.")
+                            .font(.caption).foregroundStyle(Color.ink3)
+                            .listRowBackground(Color.paper)
+                    }
                 }
                 Section("Stimme") {
                     Button {

@@ -14,7 +14,12 @@ final class Speech {
         synth.stopSpeaking(at: .immediate)
         let u = AVSpeechUtterance(string: text)
         u.voice = currentVoice(lang)
-        u.rate = slow ? 0.3 : 0.42
+        // Vietnamesisch NIE stark verlangsamen — gedehnte Töne klingen falsch.
+        if lang.hasPrefix("vi") {
+            u.rate = slow ? 0.42 : 0.5
+        } else {
+            u.rate = slow ? 0.3 : 0.42
+        }
         u.preUtteranceDelay = 0.05
         synth.speak(u)
     }

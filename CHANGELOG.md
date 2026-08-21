@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6 (2026-08-20)
+- Sicherheits-Härtung: zentrale Netzschicht `Net` — Host-Allowlist (nur die
+  3 bekannten Quellen), nur HTTPS, nur 2xx, Antwortgröße gedeckelt (512 KB),
+  ephemere Session ohne Cookies; Suchbegriffe (60 Zeichen, keine Steuerzeichen)
+  und alle Fremdtexte (Tags/Wiki-Reste raus, Längenlimit) werden gesäubert
+- Audit dokumentiert: keine offenen Ports, kein WebView, keine ATS-Ausnahmen,
+  keine Hintergrund-Modi — Netzverkehr nur ausgehend und nur auf Nutzeraktion
+
 ## 1.5 (2026-08-20)
 - Inhalts-Engine (ContentEngine.swift): Satzfabrik baut aus jedem Nomen —
   auch selbst gespeicherten — grammatisch korrekte Übungssätze

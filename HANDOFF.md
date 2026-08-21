@@ -2,7 +2,7 @@
 > **Für einen frischen Chat:** Nur diese Datei lesen genügt, um weiterzuarbeiten.
 > Aktualisiert bei jedem Big Step (Versionssprung, neues Feature, Infrastruktur).
 
-**Stand:** 2026-08-20 · **Version 1.5 (Build 6)** · läuft auf iPhone 15 des Users
+**Stand:** 2026-08-20 · **Version 1.6 (Build 7)** · läuft auf iPhone 15 des Users
 **Repo:** `~/Developer/CauNoi` · Remotes: `icloud` (Bare-Repo iCloud Drive/Backups) + `github` (derangler3008/CauNoi, privat) — nach jedem Commit auf BEIDE pushen.
 
 ## Projekt in 3 Sätzen
@@ -69,6 +69,17 @@ Smoke-Test-Hooks (Debug): `-profile con|bome -tab 0..4 -autoanswer 1 -showdict 1
 - SIMULATOR-QUIRK: Color-Emoji rendern in der 26.6↔26.4-Match-Konstellation als
   Tofu/leer — Datenebene per Isolationstest verifiziert (U+1F6D2 korrekt), Font im
   Runtime vorhanden. Emoji-Optik NUR auf dem echten Gerät beurteilen
+
+## Sicherheitsmodell (Audit 2026-08-20, v1.6)
+- KEINE eingehenden Verbindungen: App öffnet nie Ports/Listener (Audit: grep NWListener/bind/NetService leer)
+- Ausgehend NUR `Net.fetch` in Dict.swift: HTTPS-Pflicht, Host-Allowlist
+  (mymemory/wiktionary/tatoeba), 2xx-Pflicht, 512-KB-Deckel, ephemere Session
+- Neue Quelle anbinden = Host in `Net.allowedHosts` + Fetcher — NIE eigene URLSession
+- Injection-Flächen: kein WebView/HTML-Rendering (SwiftUI-Text führt nichts aus),
+  URLComponents percent-encoded alle Parameter, Fremdtexte durch `Net.cleanDisplay`,
+  Suchbegriffe durch `Net.cleanQuery`
+- Es verlässt das Gerät: NUR das Suchwort. Keine IDs, nie die E-Mail des Users
+- Bewusst KEIN Cert-Pinning (öffentliche APIs rotieren Zertifikate; Bruchrisiko > Nutzen)
 
 ## Arbeitsregeln des Users (verbindlich, Details in CLAUDE.md + Memory)
 1. Iterativ: entwickeln → prüfen → korrigieren → erneut prüfen; 10-Punkte-Review je Schritt

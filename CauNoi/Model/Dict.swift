@@ -1,6 +1,58 @@
 import Foundation
 import Combine
 
+/// Zentrale, abgesicherte Netzschicht — die EINZIGE Stelle der App, die ins
+/// Internet darf. Nur ausgehende HTTPS-GETs an bekannte Hosts; die App
+/// öffnet selbst niemals einen Port und nimmt keine Verbindungen an.
+enum Net {
+    /// Erlaubte Quellen — neue Quellen bewusst hier eintragen, nirgendwo sonst.
+    static let allowedHosts: Set<String> = [
+        "api.mymemory.translated.net",  // Übersetzung
+        "de.wiktionary.org",            // Artikel & Plural
+        "api.tatoeba.org"               // Beispielsätze
+    ]
+    static let maxResponseBytes = 512 * 1024
+
+    enum NetError: Error { case forbiddenHost, badStatus, tooLarge }
+
+    private static let session: URLSession = {
+        let c = URLSessionConfiguration.ephemeral   // keine Cookies, kein Tracking-Speicher
+        c.timeoutIntervalForRequest = 12
+        c.timeoutIntervalForResource = 25
+        return URLSession(configuration: c)
+    }()
+
+    /// Nur HTTPS, nur Allowlist-Hosts, nur 2xx, begrenzte Antwortgröße.
+    static func fetch(_ url: URL) async throws -> Data {
+        guard url.scheme == "https", let host = url.host, allowedHosts.contains(host) else {
+            throw NetError.forbiddenHost
+        }
+        let (data, resp) = try await session.data(from: url)
+        guard let http = resp as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw NetError.badStatus
+        }
+        guard data.count <= maxResponseBytes else { throw NetError.tooLarge }
+        return data
+    }
+
+    /// Suchbegriff säubern: Steuerzeichen raus, Länge begrenzen.
+    static func cleanQuery(_ s: String) -> String {
+        String(s.trimmingCharacters(in: .whitespacesAndNewlines)
+            .filter { !$0.isNewline && !$0.unicodeScalars.contains { $0.properties.generalCategory == .control } }
+            .prefix(60))
+    }
+
+    /// Fremdtext fürs Anzeigen säubern: HTML-Tags und Wiki-Reste raus,
+    /// Whitespace normalisieren, Länge begrenzen. SwiftUI-Text führt ohnehin
+    /// nichts aus — das hier verhindert zusätzlich Anzeige-Müll.
+    static func cleanDisplay(_ s: String, max: Int = 160) -> String {
+        var t = s.replacingOccurrences(of: "<[^>]*>", with: " ", options: .regularExpression)
+        t = t.replacingOccurrences(of: "[{}\\[\\]|]", with: " ", options: .regularExpression)
+        t = t.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+        return String(t.trimmingCharacters(in: .whitespaces).prefix(max))
+    }
+}
+
 /// Online-Wörterbuch (MyMemory, kostenlos, ohne Schlüssel) mit lokalem Cache.
 /// Jede erfolgreiche Suche wird gespeichert und ist danach offline verfügbar —
 /// so wächst die App mit, sobald jemand im Internet ist.
@@ -45,7 +97,7 @@ final class Dict: ObservableObject {
     }
 
     func lookup(_ rawQ: String, from: String, to: String) async throws -> DictEntry {
-        let q = rawQ.trimmingCharacters(in: .whitespaces)
+        let q = Net.cleanQuery(rawQ)
         guard !q.isEmpty else { throw DictError.empty }
         if let hit = cached(q, from: from, to: to) { return hit }
 
@@ -54,13 +106,9 @@ final class Dict: ObservableObject {
             URLQueryItem(name: "q", value: q),
             URLQueryItem(name: "langpair", value: "\(from)|\(to)")
         ]
-        let cfg = URLSessionConfiguration.ephemeral
-        cfg.timeoutIntervalForRequest = 12
-        let session = URLSession(configuration: cfg)
-
         let data: Data
         do {
-            (data, _) = try await session.data(from: comps.url!)
+            data = try await Net.fetch(comps.url!)
         } catch {
             throw DictError.offline
         }
@@ -74,13 +122,13 @@ final class Dict: ObservableObject {
         guard let mm = try? JSONDecoder().decode(MM.self, from: data) else {
             throw DictError.badResponse
         }
-        let main = mm.responseData.translatedText.trimmingCharacters(in: .whitespaces)
+        let main = Net.cleanDisplay(mm.responseData.translatedText, max: 120)
         guard !main.isEmpty else { throw DictError.empty }
 
         var seen = Set([main.lowercased(), q.lowercased()])
         var alts: [String] = []
         for m in mm.matches ?? [] {
-            guard let t = m.translation?.trimmingCharacters(in: .whitespaces), !t.isEmpty else { continue }
+            guard let t = m.translation.map({ Net.cleanDisplay($0, max: 120) }), !t.isEmpty else { continue }
             if seen.insert(t.lowercased()).inserted { alts.append(t) }
             if alts.count == 3 { break }
         }
@@ -90,8 +138,8 @@ final class Dict: ObservableObject {
         // Anreicherung: nur für einzelne deutsche Wörter, Fehler werden still toleriert.
         let deWord = entry.deWord.trimmingCharacters(in: .whitespaces)
         if !deWord.isEmpty, !deWord.contains(" ") {
-            async let grammar = try? Self.fetchGrammar(deWord, session: session)
-            async let example = try? Self.fetchExample(deWord, session: session)
+            async let grammar = try? Self.fetchGrammar(deWord)
+            async let example = try? Self.fetchExample(deWord)
             if let g = await grammar { entry.art = g.art; entry.plural = g.plural }
             if let e = await example { entry.exDe = e.de; entry.exVi = e.vi }
         }
@@ -104,7 +152,7 @@ final class Dict: ObservableObject {
     }
 
     /// de.wiktionary: Genus + Plural aus der Substantiv-Übersicht.
-    private static func fetchGrammar(_ word: String, session: URLSession) async throws -> (art: String?, plural: String?) {
+    private static func fetchGrammar(_ word: String) async throws -> (art: String?, plural: String?) {
         var c = URLComponents(string: "https://de.wiktionary.org/w/api.php")!
         c.queryItems = [
             URLQueryItem(name: "action", value: "query"),
@@ -116,7 +164,7 @@ final class Dict: ObservableObject {
             URLQueryItem(name: "format", value: "json"),
             URLQueryItem(name: "formatversion", value: "2")
         ]
-        let (data, _) = try await session.data(from: c.url!)
+        let data = try await Net.fetch(c.url!)
         struct W: Decodable {
             struct Q: Decodable { let pages: [P] }
             struct P: Decodable { let revisions: [R]? }
@@ -142,13 +190,15 @@ final class Dict: ObservableObject {
             let raw = String(sect[m.lowerBound..<m.upperBound])
             let v = raw.components(separatedBy: "=").dropFirst().joined(separator: "=")
                 .trimmingCharacters(in: .whitespaces)
-            if let first = v.first, first.isLetter { plural = v }
+            let strict = String(v.filter { $0.isLetter || $0 == "-" || $0 == " " }.prefix(40))
+                .trimmingCharacters(in: .whitespaces)
+            if let first = strict.first, first.isLetter { plural = strict }
         }
         return (art, plural)
     }
 
     /// Tatoeba: kürzestes deutsches Beispiel mit vietnamesischer Übersetzung.
-    private static func fetchExample(_ word: String, session: URLSession) async throws -> (de: String, vi: String)? {
+    private static func fetchExample(_ word: String) async throws -> (de: String, vi: String)? {
         var c = URLComponents(string: "https://api.tatoeba.org/unstable/sentences")!
         c.queryItems = [
             URLQueryItem(name: "lang", value: "deu"),
@@ -157,7 +207,7 @@ final class Dict: ObservableObject {
             URLQueryItem(name: "sort", value: "relevance"),
             URLQueryItem(name: "limit", value: "10")
         ]
-        let (data, _) = try await session.data(from: c.url!)
+        let data = try await Net.fetch(c.url!)
         struct T: Decodable { let data: [Sent] }
         struct Sent: Decodable { let text: String; let translations: [Flex] }
         struct Tr: Decodable { let lang: String?; let text: String? }
@@ -175,7 +225,7 @@ final class Dict: ObservableObject {
         let pairs: [(de: String, vi: String)] = resp.data.compactMap { s in
             let vi = s.translations.flatMap(\.all).first { $0.lang == "vie" && !($0.text ?? "").isEmpty }
             guard let v = vi?.text, s.text.count < 90 else { return nil }
-            return (s.text, v)
+            return (Net.cleanDisplay(s.text, max: 140), Net.cleanDisplay(v, max: 140))
         }
         return pairs.min { $0.de.count < $1.de.count }
     }

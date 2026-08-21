@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5 (2026-08-20)
+- Inhalts-Engine (ContentEngine.swift): Satzfabrik baut aus jedem Nomen —
+  auch selbst gespeicherten — grammatisch korrekte Übungssätze
+  (Nominativ/Akkusativ, der→den) mit vietnamesischer Übersetzung
+- Neue Übung „Ghép câu": Sätze aus Wortkacheln zusammensetzen
+  (Duolingo-Mechanik) — kuratierte + generierte + Tatoeba-Sätze,
+  Einstieg über große Karte in Mẫu câu
+- Bilder: ~80 Wort-Emoji + Kategorie-Symbole auf den Quiz-Karten
+  (im Hörquiz erst nach der Antwort — vorher wäre es ein Tipp)
+
 ## 1.4 (2026-08-20)
 - Die App wächst jetzt wirklich: Im Wörterbuch nachgeschlagene Wörter lassen sich
   per „Zum Üben speichern / Thêm vào bài học" als eigene Lernkarten übernehmen —

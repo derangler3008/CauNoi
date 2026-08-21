@@ -2,7 +2,7 @@
 > **Für einen frischen Chat:** Nur diese Datei lesen genügt, um weiterzuarbeiten.
 > Aktualisiert bei jedem Big Step (Versionssprung, neues Feature, Infrastruktur).
 
-**Stand:** 2026-08-20 · **Version 1.4 (Build 5)** · läuft auf iPhone 15 des Users
+**Stand:** 2026-08-20 · **Version 1.5 (Build 6)** · läuft auf iPhone 15 des Users
 **Repo:** `~/Developer/CauNoi` · Remotes: `icloud` (Bare-Repo iCloud Drive/Backups) + `github` (derangler3008/CauNoi, privat) — nach jedem Commit auf BEIDE pushen.
 
 ## Projekt in 3 Sätzen
@@ -18,6 +18,9 @@ Indigo/Zinnober/Seladon auf Eierschale, Serif-Display, Dark Mode bewusst gedämp
   (Artikel/Plural, farbig) + Tatoeba (DE↔VI-Satzpaare) — alles offline-gecacht
 - Wachstums-Kreislauf: Lookup → „Zum Üben speichern" → `Model/MyWords.swift` → Wort
   erscheint in ALLEN Quiz-Pools (+ Beispielsatz in Mẫu câu); Verwaltung in Mehr/Thêm
+- `Model/ContentEngine.swift`: Quellen-Registry-Doku, SentenceFactory (Template-Sätze
+  mit Akkusativ-Regel der→den) und Pictos (Emoji-Bilder je Wort/Kategorie)
+- Ghép-câu-Kachelübung: `Views/TileQuizView.swift`, Einstieg in Mẫu câu, Hook `-showbuild 1`
 - Stimmen-Auswahl mit Hörprobe (Mehr/Thêm), bevorzugt Premium > Enhanced > Standard
 - Artikel wird mitgesprochen (word.full) — AUSSER vor Antwort im Artikel-Quiz (Spoiler)
 - QA: 81 Nomen gegen Wiktionary validiert (0 Artikelfehler); Engine-Testsuite grün
@@ -63,6 +66,9 @@ Smoke-Test-Hooks (Debug): `-profile con|bome -tab 0..4 -autoanswer 1 -showdict 1
 - Signatur (kostenlose Apple-ID) läuft nach 7 Tagen ab → neu deployen
 - Debug-Launch-Args wirken NUR im jeweiligen Prozessstart (arguments domain, nicht
   persistent) — Seeds bei jedem Testlauf erneut mitgeben
+- SIMULATOR-QUIRK: Color-Emoji rendern in der 26.6↔26.4-Match-Konstellation als
+  Tofu/leer — Datenebene per Isolationstest verifiziert (U+1F6D2 korrekt), Font im
+  Runtime vorhanden. Emoji-Optik NUR auf dem echten Gerät beurteilen
 
 ## Arbeitsregeln des Users (verbindlich, Details in CLAUDE.md + Memory)
 1. Iterativ: entwickeln → prüfen → korrigieren → erneut prüfen; 10-Punkte-Review je Schritt

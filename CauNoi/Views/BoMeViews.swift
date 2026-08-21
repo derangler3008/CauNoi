@@ -141,6 +141,9 @@ struct ListenQuizView: View {
                         }
 
                         if let c = chosen {
+                            if let e = Pictos.emoji(de: word.de, cat: word.cat) {
+                                Text(e).font(.system(size: 56))
+                            }
                             FeedbackBox(
                                 ok: c == word.vi,
                                 title: c == word.vi ? "Đúng rồi!" : "Chưa đúng.",
@@ -248,6 +251,9 @@ struct ArticleQuizView: View {
                                 .foregroundStyle(Color.ink3)
                             Spacer()
                             Text("#\(seen + 1)").font(.caption2.monospaced()).foregroundStyle(Color.ink3)
+                        }
+                        if let e = Pictos.emoji(de: word.de, cat: word.cat) {
+                            Text(e).font(.system(size: 46))
                         }
                         Text("__ \(word.de)")
                             .font(.system(size: 38, design: .serif).weight(.medium))
@@ -366,6 +372,7 @@ struct ArticleQuizView: View {
 // ── Mẫu câu ─────────────────────────────────────────────
 struct PhrasesView: View {
     @State private var showDict = false
+    @State private var showBuilder = false
     @ObservedObject private var my = MyWords.shared
     private var mySentences: [(de: String, vi: String)] {
         my.items.compactMap { w in
@@ -381,6 +388,24 @@ struct PhrasesView: View {
                         .font(.system(.subheadline, design: .serif))
                         .foregroundStyle(Color.ink2)
                         .listRowBackground(Color.paper)
+                }
+                Section {
+                    Button { showBuilder = true } label: {
+                        HStack(spacing: 12) {
+                            Text("🧩").font(.system(size: 34))
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Ghép câu — luyện tập")
+                                    .font(.system(.body, design: .serif).weight(.bold))
+                                    .foregroundStyle(Color.paper)
+                                Text("Xếp ô chữ thành câu tiếng Đức")
+                                    .font(.subheadline).foregroundStyle(Color.paper.opacity(0.85))
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right").foregroundStyle(Color.paper)
+                        }
+                        .padding(.vertical, 6)
+                    }
+                    .listRowBackground(Color.indigo)
                 }
                 if !mySentences.isEmpty {
                     Section("Câu của tôi — từ những từ đã tra") {
@@ -466,6 +491,12 @@ struct PhrasesView: View {
                 }
             }
             .sheet(isPresented: $showDict) { DictionaryView(ui: "vi") }
+            .sheet(isPresented: $showBuilder) { TileQuizView() }
+            .onAppear {
+                #if DEBUG
+                if UserDefaults.standard.bool(forKey: "showbuild") { showBuilder = true }
+                #endif
+            }
         }
     }
 }

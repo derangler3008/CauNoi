@@ -2,7 +2,7 @@
 > **Für einen frischen Chat:** Nur diese Datei lesen genügt, um weiterzuarbeiten.
 > Aktualisiert bei jedem Big Step (Versionssprung, neues Feature, Infrastruktur).
 
-**Stand:** 2026-08-20 · **Version 1.6 (Build 7)** · läuft auf iPhone 15 des Users
+**Stand:** 2026-08-20 · **Version 1.7 (Build 8)** · läuft auf iPhone 15 des Users
 **Repo:** `~/Developer/CauNoi` · Remotes: `icloud` (Bare-Repo iCloud Drive/Backups) + `github` (derangler3008/CauNoi, privat) — nach jedem Commit auf BEIDE pushen.
 
 ## Projekt in 3 Sätzen
@@ -27,7 +27,9 @@ Indigo/Zinnober/Seladon auf Eierschale, Serif-Display, Dark Mode bewusst gedämp
 
 ## Dateien
 - `CauNoi/Model/Engine.swift` — Ton-/Telex-Logik. Nach JEDER Änderung: Testsuite!
-- `CauNoi/Model/{VietnameseData,GermanData}.swift` — kuratierte Inhalte
+- `CauNoi/Model/{VietnameseData,GermanData}.swift` + `…Plus.swift` — kuratierte Inhalte
+  (DE 636 / VN 333 Wörter; Plus-Dateien nutzen core+more mit runtime-dedupe;
+  Nomen-Artikel 374/374 gegen Wiktionary validiert, QA-Skript siehe CLAUDE.md)
 - `CauNoi/Model/Dict.swift` — 3-Quellen-Wörterbuch mit Cache (UserDefaults)
 - `CauNoi/Model/MyWords.swift` — vom User gespeicherte Wörter, Brücken in alle Pools
 - `CauNoi/Model/{Speech,Progress}.swift` — TTS (Stimmwahl via UserDefaults voice.vi/de),

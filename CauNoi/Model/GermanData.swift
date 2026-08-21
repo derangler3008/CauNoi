@@ -19,7 +19,7 @@ struct GPhrase: Identifiable {
 
 enum GermanData {
 
-    static let words: [GWord] = [
+    static let coreWords: [GWord] = [
         // Sức khỏe
         GWord(de: "Termin", art: "der", pl: "Termine", vi: "cuộc hẹn", cat: "Sức khỏe", note: "quan trọng nhất nước Đức — đi đâu cũng cần hẹn trước"),
         GWord(de: "Arzt", art: "der", pl: "Ärzte", vi: "bác sĩ", cat: "Sức khỏe", note: "bác sĩ nữ: die Ärztin"),
@@ -138,7 +138,7 @@ enum GermanData {
     /// Nur Nomen — für das Artikel-Quiz.
     static let nouns: [GWord] = words.filter { $0.art != nil }
 
-    static let phrases: [GPhrase] = [
+    static let corePhrases: [GPhrase] = [
         GPhrase(de: "Guten Morgen!", vi: "Chào buổi sáng!", cat: "Chào hỏi"),
         GPhrase(de: "Guten Tag!", vi: "Xin chào! (ban ngày)", cat: "Chào hỏi"),
         GPhrase(de: "Auf Wiedersehen!", vi: "Tạm biệt!", cat: "Chào hỏi"),
@@ -180,7 +180,7 @@ enum GermanData {
         GPhrase(de: "Bis morgen!", vi: "Hẹn ngày mai!", cat: "Hàng xóm")
     ]
 
-    static let phraseCats: [String] = ["Chào hỏi", "Khi chưa hiểu", "Ở phòng khám", "Ở cơ quan", "Mua sắm", "Hàng xóm"]
+    static let phraseCats: [String] = ["Chào hỏi", "Khi chưa hiểu", "Ở phòng khám", "Ở cơ quan", "Mua sắm", "Hàng xóm", "Ở nhà hàng", "Hỏi đường", "Gọi điện", "Thời tiết & chuyện phiếm", "Gia đình & cảm xúc"]
 
     /// Deutsche Laute, erklärt auf Vietnamesisch.
     static let sounds: [SoundCard] = [

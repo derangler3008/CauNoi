@@ -16,7 +16,7 @@ struct SoundCard: Identifiable {
 
 enum VietnameseData {
 
-    static let words: [VWord] = [
+    static let coreWords: [VWord] = [
         // Familie
         VWord(v: "bố", de: "Vater", cat: "Familie", note: "im Norden; im Süden: ba"),
         VWord(v: "mẹ", de: "Mutter", cat: "Familie", note: "im Norden; im Süden: má"),
@@ -179,7 +179,7 @@ enum VietnameseData {
     /// Einsilbige Wörter fürs Tonquiz.
     static let tonePool: [VWord] = words.filter { !$0.v.contains(" ") }
 
-    static let sentences: [VSentence] = [
+    static let coreSentences: [VSentence] = [
         VSentence(vi: "Con chào bố mẹ.", de: "Hallo Mama, hallo Papa."),
         VSentence(vi: "Ăn cơm chưa?", de: "Hast du schon gegessen? — die normalste Begrüßung überhaupt."),
         VSentence(vi: "Hôm nay con đi học.", de: "Heute gehe ich zur Schule."),

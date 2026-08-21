@@ -115,7 +115,11 @@ enum Pictos {
         "Mua sắm": "🛒", "Gia đình": "👨‍👩‍👧", "Công việc": "💼",
         "Thời gian": "🕐", "Động từ": "🏃", "Chào hỏi": "👋",
         "Khi chưa hiểu": "🤔", "Ở phòng khám": "🩺", "Ở cơ quan": "🏛️",
-        "Hàng xóm": "🏘️", "Từ của tôi": "⭐"
+        "Hàng xóm": "🏘️", "Từ của tôi": "⭐",
+        "Ăn uống": "🍽️", "Cơ thể": "💪", "Quần áo": "👕", "Thời tiết": "⛅",
+        "Trường học": "🏫", "Cảm xúc": "💛", "Tính từ & trạng từ": "🎨",
+        "Giao tiếp": "💬", "Ở nhà hàng": "🍜", "Hỏi đường": "🧭", "Gọi điện": "📞",
+        "Thời tiết & chuyện phiếm": "☕", "Gia đình & cảm xúc": "🏡"
     ]
     static func emoji(de: String, cat: String) -> String? {
         byWord[de] ?? byCat[cat]

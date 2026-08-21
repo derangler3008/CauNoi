@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.7 (2026-08-20)
+- Großer Wortschatz-Ausbau auf Konversationsniveau:
+  Deutsch 104 → 636 Wörter (+532: Essen, Körper, Kleidung, Wohnen, Verkehr,
+  Gesundheit, Behörden, Arbeit, Wochentage/Monate, Wetter, Schule, Gefühle,
+  ~130 Verben, ~100 Adjektive/Adverbien, Frage- & Richtungswörter),
+  Vietnamesisch 149 → 333 Wörter
+- QA: alle 374 Nomen-Artikel maschinell gegen de.wiktionary validiert — 0 Fehler
+- +71 Alltagssätze in 5 neuen Kategorien (Restaurant, Wegbeschreibung,
+  Telefonieren, Smalltalk, Familie), +30 Lesesätze im Con-Profil
+- Ghép-câu-Pool wächst dadurch auf mehrere tausend Übungssätze
+
 ## 1.6 (2026-08-20)
 - Sicherheits-Härtung: zentrale Netzschicht `Net` — Host-Allowlist (nur die
   3 bekannten Quellen), nur HTTPS, nur 2xx, Antwortgröße gedeckelt (512 KB),

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4 (2026-08-20)
+- Die App wächst jetzt wirklich: Im Wörterbuch nachgeschlagene Wörter lassen sich
+  per „Zum Üben speichern / Thêm vào bài học" als eigene Lernkarten übernehmen —
+  sie erscheinen in Hörquiz, der·die·das (mit Wiktionary-Artikel), Ton-Quiz und
+  Schreibtrainer, ihre Tatoeba-Beispielsätze zusätzlich unter „Mẫu câu"
+- Verwaltung unter Mehr/Thêm: „Meine Wörter / Từ của tôi", Wischen zum Löschen
+- Fortschrittszählung berücksichtigt eigene Wörter
+
 ## 1.3 (2026-08-20)
 - Wörterbuch um zwei Quellen erweitert: de.wiktionary.org liefert Artikel +
   Plural (farbig, autoritativ), Tatoeba echte Beispielsatz-Paare DE↔VI —

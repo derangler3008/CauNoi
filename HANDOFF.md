@@ -2,7 +2,7 @@
 > **Für einen frischen Chat:** Nur diese Datei lesen genügt, um weiterzuarbeiten.
 > Aktualisiert bei jedem Big Step (Versionssprung, neues Feature, Infrastruktur).
 
-**Stand:** 2026-08-20 · **Version 1.3 (Build 4)** · läuft auf iPhone 15 des Users
+**Stand:** 2026-08-20 · **Version 1.4 (Build 5)** · läuft auf iPhone 15 des Users
 **Repo:** `~/Developer/CauNoi` · Remotes: `icloud` (Bare-Repo iCloud Drive/Backups) + `github` (derangler3008/CauNoi, privat) — nach jedem Commit auf BEIDE pushen.
 
 ## Projekt in 3 Sätzen
@@ -16,6 +16,8 @@ Indigo/Zinnober/Seladon auf Eierschale, Serif-Display, Dark Mode bewusst gedämp
   Faustregeln+43 Beispielsätzen, Mẫu câu, Phát âm (bome)
 - Wörterbuch „Tra từ" in beiden Profilen: MyMemory (Übersetzung) + de.wiktionary
   (Artikel/Plural, farbig) + Tatoeba (DE↔VI-Satzpaare) — alles offline-gecacht
+- Wachstums-Kreislauf: Lookup → „Zum Üben speichern" → `Model/MyWords.swift` → Wort
+  erscheint in ALLEN Quiz-Pools (+ Beispielsatz in Mẫu câu); Verwaltung in Mehr/Thêm
 - Stimmen-Auswahl mit Hörprobe (Mehr/Thêm), bevorzugt Premium > Enhanced > Standard
 - Artikel wird mitgesprochen (word.full) — AUSSER vor Antwort im Artikel-Quiz (Spoiler)
 - QA: 81 Nomen gegen Wiktionary validiert (0 Artikelfehler); Engine-Testsuite grün
@@ -24,6 +26,7 @@ Indigo/Zinnober/Seladon auf Eierschale, Serif-Display, Dark Mode bewusst gedämp
 - `CauNoi/Model/Engine.swift` — Ton-/Telex-Logik. Nach JEDER Änderung: Testsuite!
 - `CauNoi/Model/{VietnameseData,GermanData}.swift` — kuratierte Inhalte
 - `CauNoi/Model/Dict.swift` — 3-Quellen-Wörterbuch mit Cache (UserDefaults)
+- `CauNoi/Model/MyWords.swift` — vom User gespeicherte Wörter, Brücken in alle Pools
 - `CauNoi/Model/{Speech,Progress}.swift` — TTS (Stimmwahl via UserDefaults voice.vi/de),
   Lernstand (Karte „sitzt" ab Stufe 3)
 - `CauNoi/Views/…` — Theme (Farb-Tokens, ToneCurve, FlowLayout), ConViews, BoMeViews,
@@ -46,7 +49,7 @@ xcrun devicectl device install app --device 4CF1BE53-2A23-51AF-828E-0BF5BD79C7EB
   build-device/Build/Products/Release-iphoneos/CauNoi.app
 ```
 Smoke-Test-Hooks (Debug): `-profile con|bome -tab 0..4 -autoanswer 1 -showdict 1
--dictq Wort -showvoices 1` · Screenshots: `xcrun simctl io <sim> screenshot x.png`
+-dictq Wort -showvoices 1 -seedmyword 1` · Screenshots: `xcrun simctl io <sim> screenshot x.png`
 
 ## Stolperfallen (bereits gelöst — nicht erneut hineinlaufen)
 - Xcode-26.6-SDK vs. Runtime 26.4: `xcrun simctl runtime match set iphoneos26.5 23E244` ist GESETZT
@@ -58,6 +61,8 @@ Smoke-Test-Hooks (Debug): `-profile con|bome -tab 0..4 -autoanswer 1 -showdict 1
 - Platzhalter ◌ rendert nicht → echte Buchstaben (à á ả ã ạ) verwenden
 - iCloud-Sync des Lernstands bräuchte bezahlten Dev-Account (Free = keine iCloud-Entitlements)
 - Signatur (kostenlose Apple-ID) läuft nach 7 Tagen ab → neu deployen
+- Debug-Launch-Args wirken NUR im jeweiligen Prozessstart (arguments domain, nicht
+  persistent) — Seeds bei jedem Testlauf erneut mitgeben
 
 ## Arbeitsregeln des Users (verbindlich, Details in CLAUDE.md + Memory)
 1. Iterativ: entwickeln → prüfen → korrigieren → erneut prüfen; 10-Punkte-Review je Schritt

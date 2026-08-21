@@ -10,6 +10,7 @@ struct DictionaryView: View {
     @State private var errorText: String? = nil
     @State private var loading = false
     @ObservedObject private var dict = Dict.shared
+    @ObservedObject private var my = MyWords.shared
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focused: Bool
 
@@ -111,6 +112,18 @@ struct DictionaryView: View {
                                     .buttonStyle(.plain)
                                 }
                             }
+                            Button {
+                                if let r = result { MyWords.shared.add(from: r) }
+                            } label: {
+                                Label(my.contains(r)
+                                        ? t("Ist im Training", "Đã có trong bài học")
+                                        : t("Zum Üben speichern", "Thêm vào bài học để ôn"),
+                                      systemImage: my.contains(r) ? "checkmark.circle.fill" : "plus.circle.fill")
+                                    .font(.body.weight(.semibold))
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(my.contains(r))
                             Text(t("Automatische Übersetzung — bei wichtigen Sachen (Amt, Arzt) lieber doppelt prüfen.",
                                    "Bản dịch tự động — chuyện quan trọng (cơ quan, bác sĩ) nên kiểm tra lại."))
                                 .font(.caption2).foregroundStyle(Color.ink3)

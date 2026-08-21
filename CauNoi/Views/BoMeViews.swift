@@ -147,7 +147,7 @@ struct ListenQuizView: View {
                                 body_: Text("\(word.full) = \(word.vi)"),
                                 bold: true
                             )
-                            if let ex = GermanData.examples[word.de] {
+                            if let ex = GermanData.examples[word.de] ?? MyWords.shared.example(de: word.de) {
                                 ExampleRow(ex: ex)
                             }
                             Button { next() } label: {
@@ -157,8 +157,8 @@ struct ListenQuizView: View {
                             .controlSize(.large)
                         }
 
-                        ProgressLine(done: progress.mastered(prefix: "g:", of: GermanData.words.map(\.de)),
-                                     total: GermanData.words.count,
+                        ProgressLine(done: progress.mastered(prefix: "g:", of: (GermanData.words + MyWords.shared.asGWords).map(\.de)),
+                                     total: GermanData.words.count + MyWords.shared.items.count,
                                      label: "từ đã thuộc", sep: "trên")
                     }
                     .card()
@@ -212,9 +212,9 @@ struct ListenQuizView: View {
         Speech.shared.speak(word.full, lang: "de")
     }
     private func next() {
-        word = progress.pick(GermanData.words, key: { "g:" + $0.de }, avoid: "g:" + word.de)
+        word = progress.pick(GermanData.words + MyWords.shared.asGWords, key: { "g:" + $0.de }, avoid: "g:" + word.de)
         var opts = [word.vi]
-        var others = GermanData.words.map(\.vi).filter { $0 != word.vi }.shuffled()
+        var others = (GermanData.words + MyWords.shared.asGWords).map(\.vi).filter { $0 != word.vi }.shuffled()
         while opts.count < 4, let o = others.popLast() {
             if !opts.contains(o) { opts.append(o) }
         }
@@ -299,7 +299,7 @@ struct ArticleQuizView: View {
                                     + Text(word.note.isEmpty ? "" : "\n\(word.note)"),
                                 bold: true
                             )
-                            if let ex = GermanData.examples[word.de] {
+                            if let ex = GermanData.examples[word.de] ?? MyWords.shared.example(de: word.de) {
                                 ExampleRow(ex: ex)
                             }
                             Button { next() } label: {
@@ -309,8 +309,8 @@ struct ArticleQuizView: View {
                             .controlSize(.large)
                         }
 
-                        ProgressLine(done: progress.mastered(prefix: "a:", of: GermanData.nouns.map(\.de)),
-                                     total: GermanData.nouns.count,
+                        ProgressLine(done: progress.mastered(prefix: "a:", of: (GermanData.nouns + MyWords.shared.asGNouns).map(\.de)),
+                                     total: GermanData.nouns.count + MyWords.shared.asGNouns.count,
                                      label: "danh từ đã thuộc", sep: "trên")
                     }
                     .card()
@@ -357,7 +357,7 @@ struct ArticleQuizView: View {
         Speech.shared.speak(word.full, lang: "de")
     }
     private func next() {
-        word = progress.pick(GermanData.nouns, key: { "a:" + $0.de }, avoid: "a:" + word.de)
+        word = progress.pick(GermanData.nouns + MyWords.shared.asGNouns, key: { "a:" + $0.de }, avoid: "a:" + word.de)
         chosen = nil
         seen += 1
     }
@@ -366,6 +366,13 @@ struct ArticleQuizView: View {
 // ── Mẫu câu ─────────────────────────────────────────────
 struct PhrasesView: View {
     @State private var showDict = false
+    @ObservedObject private var my = MyWords.shared
+    private var mySentences: [(de: String, vi: String)] {
+        my.items.compactMap { w in
+            guard let d = w.exDe, let v = w.exVi else { return nil }
+            return (d, v)
+        }
+    }
     var body: some View {
         NavigationStack {
             List {
@@ -374,6 +381,26 @@ struct PhrasesView: View {
                         .font(.system(.subheadline, design: .serif))
                         .foregroundStyle(Color.ink2)
                         .listRowBackground(Color.paper)
+                }
+                if !mySentences.isEmpty {
+                    Section("Câu của tôi — từ những từ đã tra") {
+                        ForEach(mySentences, id: \.de) { p in
+                            Button {
+                                Speech.shared.speak(p.de, lang: "de")
+                            } label: {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(p.de)
+                                        .font(.system(.body, design: .serif).weight(.semibold))
+                                        .foregroundStyle(Color.ink)
+                                    Text(p.vi)
+                                        .font(.subheadline).foregroundStyle(Color.ink2)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .buttonStyle(.plain)
+                            .listRowBackground(Color.surface)
+                        }
+                    }
                 }
                 ForEach(GermanData.phraseCats, id: \.self) { cat in
                     Section(cat) {
@@ -472,14 +499,15 @@ struct BoMeMoreView: View {
     @AppStorage("profile") private var profile = ""
     @State private var confirmReset = false
     @State private var showVoices = false
+    @ObservedObject private var my = MyWords.shared
 
     var body: some View {
         NavigationStack {
             List {
                 Section("Tiến độ") {
-                    let gDone = progress.mastered(prefix: "g:", of: GermanData.words.map(\.de))
-                    let aDone = progress.mastered(prefix: "a:", of: GermanData.nouns.map(\.de))
-                    Text("Nghe & chọn: \(gDone)/\(GermanData.words.count) · der die das: \(aDone)/\(GermanData.nouns.count) · hôm nay: \(progress.today) thẻ · chuỗi ngày: \(progress.streak)")
+                    let gDone = progress.mastered(prefix: "g:", of: (GermanData.words + MyWords.shared.asGWords).map(\.de))
+                    let aDone = progress.mastered(prefix: "a:", of: (GermanData.nouns + MyWords.shared.asGNouns).map(\.de))
+                    Text("Nghe & chọn: \(gDone)/\(GermanData.words.count + MyWords.shared.items.count) · der die das: \(aDone)/\(GermanData.nouns.count + MyWords.shared.asGNouns.count) · hôm nay: \(progress.today) thẻ · chuỗi ngày: \(progress.streak)")
                         .font(.footnote).foregroundStyle(Color.ink2)
                         .listRowBackground(Color.surface)
                     Text("Một từ được tính là „đã thuộc“ khi trả lời đúng ba lần. Từ đã thuộc vẫn thỉnh thoảng quay lại.")
@@ -487,6 +515,24 @@ struct BoMeMoreView: View {
                         .listRowBackground(Color.surface)
                     Button("Xóa hết tiến độ", role: .destructive) { confirmReset = true }
                         .listRowBackground(Color.surface)
+                }
+                if !my.items.isEmpty {
+                    Section("Từ của tôi (\(my.items.count)) — vuốt sang trái để xóa") {
+                        ForEach(my.items) { w in
+                            HStack {
+                                Text(w.art.map { "\($0) " } ?? "")
+                                    .font(.body.weight(.semibold))
+                                    .foregroundStyle(w.art.map { Color.article($0) } ?? Color.ink) +
+                                Text(w.de).font(.body.weight(.semibold)).foregroundStyle(Color.ink)
+                                Spacer()
+                                Text(w.vi).font(.subheadline).foregroundStyle(Color.ink2)
+                            }
+                            .listRowBackground(Color.surface)
+                        }
+                        .onDelete { idx in
+                            idx.map { my.items[$0] }.forEach { my.remove($0) }
+                        }
+                    }
                 }
                 Section("Giọng đọc") {
                     Button {

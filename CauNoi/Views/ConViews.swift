@@ -121,8 +121,8 @@ struct ToneQuizView: View {
                             .buttonStyle(.borderedProminent)
                         }
 
-                        ProgressLine(done: progress.mastered(prefix: "t:", of: VietnameseData.tonePool.map(\.v)),
-                                     total: VietnameseData.tonePool.count,
+                        ProgressLine(done: progress.mastered(prefix: "t:", of: (VietnameseData.tonePool + MyWords.shared.asVTone).map(\.v)),
+                                     total: VietnameseData.tonePool.count + MyWords.shared.asVTone.count,
                                      label: "Wörtern sitzen")
                     }
                     .card()
@@ -161,7 +161,7 @@ struct ToneQuizView: View {
         Speech.shared.speak(word.v, lang: "vi")
     }
     private func next() {
-        word = progress.pick(VietnameseData.tonePool, key: { "t:" + $0.v }, avoid: "t:" + word.v)
+        word = progress.pick(VietnameseData.tonePool + MyWords.shared.asVTone, key: { "t:" + $0.v }, avoid: "t:" + word.v)
         chosen = nil
         seen += 1
         Speech.shared.speak(word.v, lang: "vi")
@@ -295,8 +295,8 @@ struct WriteView: View {
                                 .buttonStyle(.bordered)
                         }
 
-                        ProgressLine(done: progress.mastered(prefix: "w:", of: VietnameseData.words.map(\.v)),
-                                     total: VietnameseData.words.count,
+                        ProgressLine(done: progress.mastered(prefix: "w:", of: (VietnameseData.words + MyWords.shared.asVWords).map(\.v)),
+                                     total: VietnameseData.words.count + MyWords.shared.asVWords.count,
                                      label: "Wörtern sitzen")
                     }
                     .card()
@@ -373,7 +373,7 @@ struct WriteView: View {
         Speech.shared.speak(word.v, lang: "vi")
     }
     private func next() {
-        word = progress.pick(VietnameseData.words, key: { "w:" + $0.v }, avoid: "w:" + word.v)
+        word = progress.pick(VietnameseData.words + MyWords.shared.asVWords, key: { "w:" + $0.v }, avoid: "w:" + word.v)
         raw = ""; shown = ""; rendered = ""
         result = nil; revealed = false
         seen += 1
@@ -392,6 +392,7 @@ struct ReadView: View {
     private static let lookup: [String: VWord] = {
         var m: [String: VWord] = [:]
         for w in VietnameseData.words { m[w.v.lowercased()] = m[w.v.lowercased()] ?? w }
+        for w in MyWords.shared.asVWords { m[w.v.lowercased()] = m[w.v.lowercased()] ?? w }
         return m
     }()
 
